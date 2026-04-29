@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="client.gui.MainController">
+
+    <!-- Верхняя панель -->
+    <top>
+        <HBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Label text="Уровень защиты:"/>
+            <ChoiceBox fx:id="levelChoice"/>
+
+            <Button text="Подключиться" onAction="#onConnect"/>
+            <Button text="Отключиться" onAction="#onDisconnect"/>
+        </HBox>
+    </top>
+
+    <!-- Центральная область — вывод -->
+    <center>
+        <TextArea fx:id="outputArea" editable="false" wrapText="true">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </TextArea>
+    </center>
+
+    <!-- Нижняя панель — ввод -->
+    <bottom>
+        <HBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <TextField fx:id="inputField" HBox.hgrow="ALWAYS"/>
+            <Button text="Отправить" onAction="#onSend"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
