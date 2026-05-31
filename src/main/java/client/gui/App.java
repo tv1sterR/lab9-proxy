@@ -10,13 +10,13 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(App.class.getResource("/main.fxml"));
-        Scene scene = new Scene(loader.load(), 600, 400);
-        stage.setTitle("Surprise Challenge Client");
+        Scene scene = new Scene(loader.load(), 800, 400);
+        stage.setTitle("Challenge Client");
         stage.setScene(scene);
         stage.show();
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

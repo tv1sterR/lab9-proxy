@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package tunnel;
+
+message Request {
+  string command = 1;
+  string arg1 = 2;
+  string arg2 = 3;
+}
+
+message Response {
+  string status = 1;
+  string message = 2;
+}

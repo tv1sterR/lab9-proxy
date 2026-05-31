@@ -2,46 +2,34 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.gui.MainController">
 
     <top>
-        <HBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10;">
 
             <Label text="IP:"/>
-            <TextField fx:id="ipField" prefWidth="120"/>
+            <TextField fx:id="ipField" promptText="192.168.1.10" prefWidth="130"/>
 
-            <Label text="Уровень:"/>
-            <ChoiceBox fx:id="levelChoice"/>
+            <Label text="Порт:"/>
+            <TextField fx:id="portField" promptText="6666" prefWidth="70"/>
+
+            <Label text="Тип:"/>
+            <ComboBox fx:id="connectionTypeBox" prefWidth="120"/>
 
             <Button text="Подключиться" onAction="#onConnect"/>
-            <Button text="Отключиться" onAction="#onDisconnect"/>
+
+            <TextField fx:id="inputField" promptText="Введите текст" prefWidth="200"/>
+            <Button text="Отправить" onAction="#onSendClicked"/>
+
         </HBox>
     </top>
 
     <center>
-        <TextArea fx:id="outputArea" editable="false" wrapText="true">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-        </TextArea>
+        <TextArea fx:id="outputArea" editable="false" wrapText="true"/>
     </center>
-
-    <bottom>
-        <HBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-
-            <TextField fx:id="inputField" HBox.hgrow="ALWAYS"/>
-            <Button text="Отправить" onAction="#onSend"/>
-        </HBox>
-    </bottom>
 
 </BorderPane>

@@ -1,80 +1,108 @@
 package client.gui;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import tunnel.Request;
+import tunnel.Response;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 public class MainController {
 
-    @FXML private ChoiceBox<String> levelChoice;
-    @FXML private TextArea outputArea;
-    @FXML private TextField inputField;
-    @FXML private TextField ipField;
+    @FXML
+    private ComboBox<String> connectionTypeBox;
+
+    @FXML
+    private TextField ipField;
+
+    @FXML
+    private TextField portField;
+
+    @FXML
+    private TextField inputField;
+
+    @FXML
+    private TextArea outputArea;
 
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private BufferedInputStream binIn;
+    private BufferedOutputStream binOut;
 
     @FXML
     public void initialize() {
-        levelChoice.getItems().addAll("0 — прямое", "1 — прокси");
-        levelChoice.getSelectionModel().select(0);
-        ipField.setText("localhost");
+        connectionTypeBox.getItems().addAll("TCP", "TUNNEL", "UDP");
     }
 
     @FXML
-    public void onConnect() {
+    private void onConnect() {
         try {
-            String ip = ipField.getText().trim();
-            int level = levelChoice.getSelectionModel().getSelectedIndex();
-
-            if (level == 0) {
-                socket = new Socket(ip, 5555);
-            } else {
-                socket = new Socket(ip, 5556);
+            String type = connectionTypeBox.getValue();
+            if (type == null) {
+                outputArea.appendText("Выберите тип соединения\n");
+                return;
             }
 
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
+            String ip = ipField.getText().trim();
+            if (ip.isEmpty()) {
+                outputArea.appendText("Введите IP сервера\n");
+                return;
+            }
 
-            outputArea.appendText("Подключено к " + ip + "\n");
+            int port;
+            try {
+                port = Integer.parseInt(portField.getText().trim());
+            } catch (Exception e) {
+                outputArea.appendText("Некорректный порт\n");
+                return;
+            }
 
-        } catch (Exception e) {
+            switch (type) {
+                case "TCP", "TUNNEL" -> socket = new Socket(ip, port);
+                case "UDP" -> {
+                    outputArea.appendText("UDP пока не реализован\n");
+                    return;
+                }
+            }
+
+            binIn = new BufferedInputStream(socket.getInputStream());
+            binOut = new BufferedOutputStream(socket.getOutputStream());
+
+            outputArea.appendText("Подключено: " + ip + ":" + port + " (" + type + ")\n");
+
+        } catch (IOException e) {
             outputArea.appendText("Ошибка подключения: " + e.getMessage() + "\n");
         }
     }
 
     @FXML
-    public void onDisconnect() {
-        try {
-            if (socket != null) socket.close();
-            outputArea.appendText("Отключено.\n");
-        } catch (IOException e) {
-            outputArea.appendText("Ошибка: " + e.getMessage() + "\n");
+    private void onSendClicked() {
+        if (socket == null || socket.isClosed()) {
+            outputArea.appendText("Нет подключения к серверу\n");
+            return;
         }
-    }
 
-    @FXML
-    public void onSend() {
         try {
-            String cmd = inputField.getText();
-            inputField.clear();
+            String text = inputField.getText();
 
-            if (out == null) {
-                outputArea.appendText("Нет подключения.\n");
-                return;
-            }
+            Request req = Request.newBuilder()
+                    .setCommand("ECHO")
+                    .setArg1(text)
+                    .build();
 
-            out.println(cmd);
-            String resp = in.readLine();
+            req.writeDelimitedTo(binOut);
+            binOut.flush();
 
-            outputArea.appendText("> " + cmd + "\n");
-            outputArea.appendText(resp + "\n");
+            Response resp = Response.parseDelimitedFrom(binIn);
 
-        } catch (Exception e) {
-            outputArea.appendText("Ошибка отправки: " + e.getMessage() + "\n");
+            outputArea.appendText("Ответ: " + resp.getMessage() + "\n");
+
+        } catch (IOException e) {
+            outputArea.appendText("Ошибка при отправке/получении: " + e.getMessage() + "\n");
         }
     }
 }
