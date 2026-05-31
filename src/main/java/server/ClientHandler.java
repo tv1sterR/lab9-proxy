@@ -98,7 +98,6 @@ public class ClientHandler implements Runnable {
             }
 
             case "REVEAL": {
-                // Вариант №7: авторы НЕ раскрываются
                 return "OK|Авторы заданий не раскрываются в этой игре";
             }
 

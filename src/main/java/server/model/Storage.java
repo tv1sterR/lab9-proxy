@@ -28,7 +28,7 @@ public class Storage {
         inbox.remove(user);
     }
 
-    // пометить все задания из inbox как выполненные
+    // DONE: пометить задания как выполненные
     public synchronized boolean markDone(String user) {
         List<String> tasks = inbox.get(user);
         if (tasks == null || tasks.isEmpty()) {

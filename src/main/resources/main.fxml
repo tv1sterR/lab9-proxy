@@ -8,14 +8,16 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="client.gui.MainController">
 
-    <!-- Верхняя панель -->
     <top>
         <HBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <Label text="Уровень защиты:"/>
+            <Label text="IP:"/>
+            <TextField fx:id="ipField" prefWidth="120"/>
+
+            <Label text="Уровень:"/>
             <ChoiceBox fx:id="levelChoice"/>
 
             <Button text="Подключиться" onAction="#onConnect"/>
@@ -23,7 +25,6 @@
         </HBox>
     </top>
 
-    <!-- Центральная область — вывод -->
     <center>
         <TextArea fx:id="outputArea" editable="false" wrapText="true">
             <padding>
@@ -32,7 +33,6 @@
         </TextArea>
     </center>
 
-    <!-- Нижняя панель — ввод -->
     <bottom>
         <HBox spacing="10">
             <padding>
